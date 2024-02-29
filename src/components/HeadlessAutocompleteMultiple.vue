@@ -12,11 +12,7 @@
             placeholder="Select"
             @change="setQuery($event.target.value)"
           />
-          <button
-            v-if="selectedModel.length >= 1"
-            @click="clearFilters()"
-            class="absolute z-20 right-10 top-2.5"
-          >
+          <button v-if="query !== ''" @click="clearInput()" class="absolute z-20 right-10 top-2.5">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
               <path
                 fill="#888888"
@@ -28,12 +24,7 @@
             <IconChevronDown class="w-5 h-5 text-gray-400" />
           </ComboboxButton>
         </div>
-        <TransitionRoot
-          leave="transition ease-in duration-100"
-          leave-from="opacity-100"
-          leave-to="opacity-0"
-          @after-leave="query = ''"
-        >
+        <TransitionRoot @after-leave="query = ''">
           <ComboboxOptions
             class="absolute z-50 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring ring-black ring-opacity-5 focus:outline-none sm:text-sm"
           >
@@ -58,12 +49,12 @@
                   'text-gray-900': !active
                 }"
               >
-                <span class="block w-full text-sm break-words">
+                <span class="block w-full text-xs break-words">
                   {{ person.label }}
                 </span>
                 <span
                   v-if="selected"
-                  class="absolute inset-y-0 right-0 flex items-center top-0 pr-3"
+                  class="absolute inset-y-0 top-0 right-0 flex items-center pr-3"
                   :class="{ 'text-white': active, 'text-blue-900': !active }"
                 >
                   <svg
@@ -92,7 +83,20 @@
         >
           <Menu as="div" class="relative inline-block text-left">
             <MenuButton
-              class="text-gray-900 rounded-md hover:ring-2 hover:ring-blue-100 text-xs px-2 py-0.5 bg-blue-100 duration-300 hover:bg-blue-100/90 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 font-normal"
+              class="
+                text-gray-900
+                rounded-md
+                hover:ring-2 hover:ring-blue-100
+                text-xs
+                px-2
+                py-0.5
+                bg-blue-100
+                duration-300
+                hover:bg-blue-100/90
+                outline-none
+                focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2
+                font-normal
+              "
             >
               {{ selectedModel.length }} item<span v-if="selectedModel.length >= 2">s</span>
               selected
@@ -107,11 +111,17 @@
               leave-to-class="transform scale-95 opacity-0"
             >
               <MenuItems
-                class="absolute translate-y-2 right-0 w-64 overflow-hidden origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-2 ring-blue-300 focus:outline-none"
+                class="absolute right-0 w-64 overflow-hidden origin-top-right translate-y-2 bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-2 ring-blue-300 focus:outline-none"
               >
                 <div
                   v-auto-animate
-                  class="overflow-x-hidden p-1 overflow-y-auto max-h-[200px] border-b border-gray-900/10"
+                  class="
+                    overflow-x-hidden
+                    p-1
+                    overflow-y-auto
+                    max-h-[200px]
+                    border-b border-gray-900/10
+                  "
                 >
                   <MenuItem
                     as="div"
@@ -121,7 +131,21 @@
                   >
                     <ComboboxOption :value="person" as="div">
                       <div
-                        class="relative flex items-start justify-between w-full p-2 pr-0.5 text-sm text-left border-b rounded-md cursor-pointer select-none last-of-type:border-none"
+                        class="
+                          relative
+                          flex
+                          items-start
+                          justify-between
+                          w-full
+                          p-2
+                          pr-0.5
+                          text-xs text-left
+                          border-b
+                          rounded-md
+                          cursor-pointer
+                          select-none
+                          last-of-type:border-none
+                        "
                         :class="{
                           'text-white bg-blue-600': active,
                           'text-gray-800': !active
@@ -155,7 +179,7 @@
                   <MenuItem v-slot="{ active }">
                     <template v-if="selectedModel.length > 0">
                       <ComboboxOption
-                        class="relative flex items-center justify-center w-full p-2 text-sm font-medium text-center rounded-md cursor-pointer select-none"
+                        class="relative flex items-center justify-center w-full p-2 text-sm font-medium text-center rounded-md cursor-pointer select-none "
                         :class="{
                           'text-blue-100 bg-blue-600': active,
                           'text-gray-800': !active
@@ -194,13 +218,15 @@ let selectedModel = ref([])
 let query = ref("")
 
 function clearFilters() {
-  console.log(selectedModel)
   selectedModel.value = []
+}
+
+function clearInput() {
+  query.value = ""
 }
 
 function setQuery(index) {
   query.value = index
-  console.log(index)
 }
 
 let filteredPeople = computed(() =>
